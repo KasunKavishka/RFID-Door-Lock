@@ -1,0 +1,8 @@
+ SS_PIN            10
+ RST_PIN           9
+ LED_G             5 
+ LED_R             4 
+ RELAY             3 
+ BUZZER            2 
+
+(ss pin and sda pin is changing to bord to another bord )
