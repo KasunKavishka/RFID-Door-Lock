@@ -79,14 +79,7 @@ void cardRead() {
   for (int i=0; i < sizeof(*RFIDTags)- 1; i++) {
     if (content.substring(1) == (*RFIDTags[i])) 
     {
-      Serial.println("Authorized access");
-      Serial.println();
-      delay(500);
-      digitalWrite(RELAY, LOW);
-      digitalWrite(LED_G, HIGH);
-      delay(ACCESS_DELAY);
-      digitalWrite(RELAY, HIGH);
-      digitalWrite(LED_G, LOW);
+      authorizedProtocol();
       readApprovalDenied = false;
       return;
     } else {
@@ -96,6 +89,17 @@ void cardRead() {
   }
 }
 
+
+void authorizedProtocol(){
+      Serial.println("Authorized access");
+      Serial.println();
+      delay(500);
+      digitalWrite(RELAY, LOW);
+      digitalWrite(LED_G, HIGH);
+      delay(ACCESS_DELAY);
+      digitalWrite(RELAY, HIGH);
+      digitalWrite(LED_G, LOW);
+}
 
 void blockAccess(){
   // when a card rejects, an error will be shown
