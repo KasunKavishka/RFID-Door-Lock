@@ -1,6 +1,6 @@
-//kasun kavishka herath
-//hackathon team team elementry hackathon
-// RFID door lock
+//Kasun Kavishka Herath
+//Written for a Hackathon
+//Team Elementry - RFID Door Lock
 
 #include <SPI.h>
 #include <MFRC522.h>
@@ -14,6 +14,11 @@
 #define ACCESS_DELAY 2000
 #define DENIED_DELAY 1000
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
+
+// Program variables
+char *RFIDTags[] = {"AA AA AA AA", "BB BB BB BB", "CC CC CC CC",
+                    "DD DD DD DD", "EE EE EE EE", "FF FF FF FF"};
+bool readApprovalDenied = false;
  
 void setup() 
 {
@@ -29,6 +34,8 @@ void setup()
   Serial.println("Put your card to the reader...");
   Serial.println();
 
+
+
 }
 void loop() 
 {
@@ -42,6 +49,7 @@ void loop()
   {
     return;
   }
+
   //Show UID on serial monitor
   Serial.print("UID tag :");
   String content= "";
@@ -56,25 +64,36 @@ void loop()
   Serial.println();
   Serial.print("Message : ");
   content.toUpperCase();
-  if (content.substring(1) == "XX XX XX XX") //change here the UID of the card/cards that you want to give access
-  {
-    Serial.println("Authorized access");
-    Serial.println();
-    delay(500);
-    digitalWrite(RELAY, LOW);
-    digitalWrite(LED_G, HIGH);
-    delay(ACCESS_DELAY);
-    digitalWrite(RELAY, HIGH);
-    digitalWrite(LED_G, LOW);
+
+
+  // array checking to check wheather ID matches with an ID in the array
+  for (int i=0; i < sizeof(*RFIDTags)- 1; i++) {
+    if (content.substring(1) == (*RFIDTags[i])) 
+    {
+      Serial.println("Authorized access");
+      Serial.println();
+      delay(500);
+      digitalWrite(RELAY, LOW);
+      digitalWrite(LED_G, HIGH);
+      delay(ACCESS_DELAY);
+      digitalWrite(RELAY, HIGH);
+      digitalWrite(LED_G, LOW);
+      readApprovalDenied = false;
+    } else {
+      readApprovalDenied = true;
+    }
+
   }
- 
- else   {
+
+  // when a card rejects, an error will be shown
+  if (readApprovalDenied == true)  {
     Serial.println(" Access denied");
     digitalWrite(LED_R, HIGH);
     tone(BUZZER, 300);
     delay(DENIED_DELAY);
     digitalWrite(LED_R, LOW);
     noTone(BUZZER);
+    readApprovalDenied = false;
   }
 }
 
