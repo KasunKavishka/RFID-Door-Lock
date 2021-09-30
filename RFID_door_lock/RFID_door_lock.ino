@@ -34,9 +34,9 @@ void setup()
   Serial.println("Put your card to the reader...");
   Serial.println();
 
-
-
 }
+
+
 void loop() 
 {
   // Look for new cards
@@ -49,6 +49,15 @@ void loop()
   {
     return;
   }
+
+
+  cardRead();
+
+  blockAccess();
+
+}
+
+void cardRead() {
 
   //Show UID on serial monitor
   Serial.print("UID tag :");
@@ -79,12 +88,16 @@ void loop()
       digitalWrite(RELAY, HIGH);
       digitalWrite(LED_G, LOW);
       readApprovalDenied = false;
+      return;
     } else {
       readApprovalDenied = true;
     }
 
   }
+}
 
+
+void blockAccess(){
   // when a card rejects, an error will be shown
   if (readApprovalDenied == true)  {
     Serial.println(" Access denied");
@@ -96,4 +109,3 @@ void loop()
     readApprovalDenied = false;
   }
 }
-
